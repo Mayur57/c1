@@ -3,6 +3,7 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const { toJSON, paginate } = require('./plugins');
 const { roles } = require('../config/roles');
+const { days } = require('../config/days');
 
 const userSchema = mongoose.Schema(
   {
@@ -39,6 +40,7 @@ const userSchema = mongoose.Schema(
       type: String,
       trim: true,
       required: true,
+      length: 10,
     },
     address: {
       type: String,
@@ -51,9 +53,23 @@ const userSchema = mongoose.Schema(
       required: true,
       default: false,
     },
+    days_opted: {
+      type: [
+        {
+          type: String,
+          enum: days,
+        },
+      ],
+      required() {
+        return this.opted;
+      },
+    },
     penalty_start: {
       type: Date,
       trim: true,
+      required() {
+        return this.cancellations_remaining < 1;
+      },
     },
     cancellations_remaining: {
       type: Number,
