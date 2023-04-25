@@ -5,6 +5,7 @@ const logger = require('../config/logger');
 const transport = nodemailer.createTransport(config.email.smtp);
 /* istanbul ignore next */
 if (config.env !== 'test') {
+  logger.info('Trying to connect to email server...');
   transport
     .verify()
     .then(() => logger.info('Connected to email server'))
